@@ -8,8 +8,8 @@ export default new Vuex.Store( {
     modalShow: false
   },
   mutations: {
-    setModalShow(state, value) {
-      state.modalShow = value
+    setModalShow(state) {
+      state.modalShow = !state.modalShow
     }
   },
   actions: {},

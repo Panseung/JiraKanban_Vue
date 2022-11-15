@@ -2,7 +2,7 @@
   <div class="board-main">
     <add-modal
       :addModalShow="addModalShow"
-      @closeAddModal="addModalShow=false"
+      @closeAddModal="addModalShow=false, $store.commit( 'setModalShow' )"
       @createTask="createTask( $event )"
     />
     <content-modal
@@ -11,34 +11,47 @@
       :contentItem="contentItem"
       :contentWriter="contentWriter"
       :contentState="contentState"
-      @closeContentModal="contentModalShow=false"
+      @closeContentModal="contentModalShow=false, $store.commit( 'setModalShow' )"
       @deleteTask="deleteTask( $event )"
     />
     <div class="board-header">
       <h1>Board</h1>
       <input/>
-      <button @click="test">test</button>
-      <button @click="test2">test2</button>
-      <button @click="test3">test3</button>
     </div>
     <div class="board-container">
-      <div class="board-item">
-        <p>TO DO 29</p>
-        <div v-for="( todo, i ) in todoList" class="task-box" @click="openContentModal( i, todo.content, todo.writer, 'todo' )">
+      <div class="board-item"
+        @drop.prevent=""
+        @dragenter.prevent
+        @dragover.prevent>
+        <p>TO DO: {{ todoList.length }}</p>
+        <div 
+          v-for="( todo, i ) in todoList" 
+          draggable="true"
+          @dragstart=""
+          class="task-box" 
+          @click="openContentModal( i, todo.content, todo.writer, 'todo' )"
+          >
           <p class="task-content">{{ todo.content }}</p>
           <p class="task-writer">{{ todo.writer }}</p>
         </div>
       </div>
       <div class="board-item">
-        <p>IN PROGRESS 4</p>
-        <div v-for="( progress, i ) in progressList" class="task-box" @click="openContentModal( i, progress.content, progress.writer,'progress' )">
+        <p>IN PROGRESS: {{ progressList.length }}</p>
+        <div 
+          v-for="( progress, i ) in progressList" 
+          draggable="true"
+          class="task-box" 
+          @click="openContentModal( i, progress.content, progress.writer,'progress' )">
           <p class="task-content">{{ progress.content }}</p>
           <p class="task-writer">{{ progress.writer }}</p>
         </div>
       </div>
       <div class="board-item">
-        <p>DONE 3</p>
-        <div v-for="( done, i ) in doneList" class="task-box" @click="openContentModal( i, done.content, done.writer, 'done' )">
+        <p>DONE: {{ doneList.length }}</p>
+        <div 
+          v-for="( done, i ) in doneList" 
+          draggable="true"
+          class="task-box" @click="openContentModal( i, done.content, done.writer, 'done' )">
           <p class="task-content">{{ done.content }}</p>
           <p class="task-writer">{{ done.writer }}</p>
         </div>
@@ -102,6 +115,7 @@ export default{
   methods: {
     showModal() {
       this.addModalShow = true;
+      this.$store.commit( 'setModalShow' )
     },
     createTask(item) {
       this.addModalShow = false
@@ -109,6 +123,7 @@ export default{
       newContent.content = item.taskModel
       newContent.writer = item.writerModel
       this.todoList.push( newContent )
+      this.$store.commit( 'setModalShow' )
     },
     openContentModal( id, content, writer, state ) {
       this.contentId = id
@@ -116,9 +131,11 @@ export default{
       this.contentWriter = writer
       this.contentModalShow = true
       this.contentState = state
+      this.$store.commit( 'setModalShow' )
     },
     deleteTask( event ) {
       this.contentModalShow = false
+      this.$store.commit( 'setModalShow' )
       if ( event.contentState == 'todo' ) {
         this.todoList.splice( event.contentId, 1 )
       } else if ( event.contentState == 'progress' ) {
@@ -126,27 +143,18 @@ export default{
       } else {
         this.doneList.splice( event.contentId, 1 )
       }
-    },
-    test() {
-      console.log(this.$store.state.modalShow)
-    },
-    test2() {
-      this.$store.commit('setModalShow', true)
-    },
-    test3() {
-      this.$store.commit('setModalShow', false)
     }
   }
 }
 </script>
 <style>
 .board-main {
-  margin: 30px;
+  padding: 10px;
   overflow: auto;
 }
 
 .board-header {
-  margin: 10px;
+  padding: 10px;
 }
 
 .board-container {
@@ -173,15 +181,19 @@ export default{
 }
 
 .black-bg {
-  width: 100%; height: 100%;
+  width: 100%; 
+  height: 100%;
   background: rgba(0,0,0,0.5);
-  position: fixed; padding: 20px;
+  position: fixed; 
+  padding: 20px;
 }
 
 .white-bg {
-  width: 50%; background: white;
+  width: 50%; 
+  background: white;
   border-radius: 8px;
   padding: 20px;
+  position: fixed;
 } 
 
 .task-box {

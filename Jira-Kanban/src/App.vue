@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <div class="black-bg" v-if="$store.state.modalShow"></div>
     <div class="main-header"></div>
     <div class="app-container">
       <div class="app-firstBar"></div>
@@ -28,7 +29,6 @@
 <script>
 export default {
   name: 'App',
-  // store
 }
 </script>
 

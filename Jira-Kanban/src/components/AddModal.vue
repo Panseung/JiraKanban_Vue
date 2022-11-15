@@ -1,5 +1,5 @@
 <template>
-   <div class="black-bg" v-if="addModalShow == true">
+   <div class="add-modal" v-if="addModalShow == true">
     <div class="white-bg">
       <h1>나는 태스크 만드는 모달</h1>
       <h3>Write Task</h3>

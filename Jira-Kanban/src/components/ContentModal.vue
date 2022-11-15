@@ -1,5 +1,5 @@
 <template>
-  <div class="black-bg" v-if="contentModalShow == true">
+  <div v-if="contentModalShow == true">
     <div class="white-bg">
       <h3>{{ contentItem }}</h3>
       <h3>{{ contentWriter }}</h3>

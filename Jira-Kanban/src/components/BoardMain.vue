@@ -2,64 +2,42 @@
   <div class="board-main">
     <add-modal
       :addModalShow="addModalShow"
-      @closeAddModal="addModalShow=false, $store.commit( 'setModalShow' )"
-      @createTask="createTask( $event )"
+      @closeAddModal="onCloseAddModal"
+      @createTask="onCreateTask"
     />
     <content-modal
       :contentModalShow="contentModalShow"
-      :contentId="contentId"
-      :contentItem="contentItem"
-      :contentWriter="contentWriter"
-      :contentState="contentState"
-      @closeContentModal="contentModalShow=false, $store.commit( 'setModalShow' )"
-      @deleteTask="deleteTask( $event )"
+      :contentItems="{
+        contentId: contentId,
+        contentText: contentText,
+        contentWriter: contentWriter,
+        contentState: contentState
+      }"
+      @closeContentModal="onCloseContentModal"
+      @deleteTask="onDeleteTask"
     />
     <div class="board-header">
       <h1>Board</h1>
       <input/>
     </div>
     <div class="board-container">
-      <div class="board-item"
-        @drop.prevent=""
-        @dragenter.prevent
-        @dragover.prevent>
-        <p>TO DO: {{ todoList.length }}</p>
-        <div 
-          v-for="( todo, i ) in todoList" 
-          draggable="true"
-          @dragstart=""
-          class="task-box" 
-          @click="openContentModal( i, todo.content, todo.writer, 'todo' )"
+      <div v-for="( taskState, i ) in [ taskList.todoList, taskList.progressList, taskList.doneList ]">
+        <div class="board-item">
+          <p>hi</p>
+          <div v-for="( stateItem, j ) in taskState.stateItems"
+            class="task-box"
+            @click="onOpenContentModal( j, stateItem.content, stateItem.writer, taskState.stateName )"
           >
-          <p class="task-content">{{ todo.content }}</p>
-          <p class="task-writer">{{ todo.writer }}</p>
+          <p class="task-content">{{ stateItem.content }}</p>
+          <p class="task-writer">{{ stateItem.writer }}</p>
+          </div>
         </div>
       </div>
-      <div class="board-item">
-        <p>IN PROGRESS: {{ progressList.length }}</p>
-        <div 
-          v-for="( progress, i ) in progressList" 
-          draggable="true"
-          class="task-box" 
-          @click="openContentModal( i, progress.content, progress.writer,'progress' )">
-          <p class="task-content">{{ progress.content }}</p>
-          <p class="task-writer">{{ progress.writer }}</p>
-        </div>
-      </div>
-      <div class="board-item">
-        <p>DONE: {{ doneList.length }}</p>
-        <div 
-          v-for="( done, i ) in doneList" 
-          draggable="true"
-          class="task-box" @click="openContentModal( i, done.content, done.writer, 'done' )">
-          <p class="task-content">{{ done.content }}</p>
-          <p class="task-writer">{{ done.writer }}</p>
-        </div>
-      </div>
-      <div class="board-item-btn" @click="showModal"></div>
+      <div class="board-item-btn" @click="onShowModal"></div>
     </div>
   </div>
 </template>
+
 <script>
 import AddModal from './AddModal'
 import ContentModal from './ContentModal';
@@ -69,87 +47,71 @@ export default{
     AddModal,
     ContentModal
   },
+  created() {
+    this.taskList = JSON.parse(localStorage.getItem('myData'))
+  },  
   data() {
     return {
       addModalShow: false,
       contentModalShow: false,
       contentId: 0,
-      contentItem:'',
+      contentText:'',
       contentWriter:'',
       contentState:'',
-      todoList: [ {
-        content: 'Allow users to change between two tiers at the same price',
-        writer: 'Kim'
-      }, {
-        content: 'Implement feed back collector',
-        writer: 'Park'
-      }, {
-        content: 'Add NPS feedback to email report',
-        writer: 'Chang'
-      }, {
-        content: 'Apply a prorated discount to a user when they move from a low to a high priced tier',
-        writer: 'Long'
-      }, {
-        content: 'extend the grace period to accounts',
-        writer: 'Han'
-      }],
-      progressList: [ {
-        content: 'Force SSL on any page that contains account info',
-        writer: 'Wang'
-      }, {
-        content: 'Create subscription plans and discount codes in Stripe',
-        writer: 'Lee'
-      }, {
-        content: 'Add analytic to pricing page',
-        writer: 'Woo'
-      } ],
-      doneList: [ {
-        content: 'Automate collection of feedback for weekly email report',
-        writer: 'Choi'
-      }, {
-        content: 'Schedule weekly email report for Monday mrnings to all staff',
-        writer: 'Yu'
-      } ]
+      taskList: null, // todoList, progressList, doneList
     }
   },
   methods: {
-    showModal() {
+    onShowModal() {
       this.addModalShow = true;
-      this.$store.commit( 'setModalShow' )
+      this.$store.dispatch( 'toggleModalShow' )
     },
-    createTask(item) {
+    onCloseAddModal() {
       this.addModalShow = false
-      let newContent = {}
-      newContent.content = item.taskModel
-      newContent.writer = item.writerModel
-      this.todoList.push( newContent )
-      this.$store.commit( 'setModalShow' )
+      this.$store.dispatch( 'toggleModalShow' )
     },
-    openContentModal( id, content, writer, state ) {
+    onCloseContentModal() {
+      this.contentModalShow = false
+      this.$store.dispatch( 'toggleModalShow' )
+    },
+    onCreateTask(item) {
+      this.addModalShow = false
+      let newContent = {
+        content: item.taskModel,
+        writer: item.writerModel
+      }
+      this.taskList.todoList.stateItems.push( newContent )
+      localStorage.setItem( 'myData', JSON.stringify(this.taskList))
+      this.$store.dispatch( 'toggleModalShow' )
+    },
+    onOpenContentModal( id, text, writer, state ) {
       this.contentId = id
-      this.contentItem = content
+      this.contentText = text
       this.contentWriter = writer
       this.contentModalShow = true
       this.contentState = state
-      this.$store.commit( 'setModalShow' )
+      this.$store.dispatch( 'toggleModalShow' )
     },
-    deleteTask( event ) {
+    onDeleteTask( event ) {
       this.contentModalShow = false
-      this.$store.commit( 'setModalShow' )
+      this.$store.dispatch( 'toggleModalShow' )
       if ( event.contentState == 'todo' ) {
-        this.todoList.splice( event.contentId, 1 )
+        this.taskList.todoList.stateItems.splice( event.contentId, 1 )
       } else if ( event.contentState == 'progress' ) {
-        this.progressList.splice( event.contentId, 1 )
+        this.taskList.progressList.stateItems.splice( event.contentId, 1 )
       } else {
-        this.doneList.splice( event.contentId, 1 )
+        this.taskList.doneList.stateItems.splice( event.contentId, 1 )
       }
+      localStorage.setItem( 'myData', JSON.stringify( this.taskList ) )
     }
   }
 }
 </script>
-<style>
+<style scoped lang="scss">
+$scss-test: 100px;
 .board-main {
   padding: 10px;
+  // padding: $scss-test;
   overflow: auto;
 }
 
@@ -180,22 +142,6 @@ export default{
   cursor: pointer;
 }
 
-.black-bg {
-  width: 100%; 
-  height: 100%;
-  background: rgba(0,0,0,0.5);
-  position: fixed; 
-  padding: 20px;
-}
-
-.white-bg {
-  width: 50%; 
-  background: white;
-  border-radius: 8px;
-  padding: 20px;
-  position: fixed;
-} 
-
 .task-box {
   background-color: white;
   border-radius: 20px;
@@ -212,7 +158,4 @@ export default{
   padding: 10px;
   text-align: right;
 }
-
-
-
 </style>

@@ -7,11 +7,19 @@ export default new Vuex.Store( {
   state: {
     modalShow: false
   },
-  mutations: {
-    setModalShow(state) {
-      state.modalShow = !state.modalShow
+  getters: {
+    modalShow( state ) {
+      return state.modalShow
     }
   },
-  actions: {},
-  getters: {}
+  mutations: {
+    setModalShow( state, val ) {
+      state.modalShow = val
+    },
+  },
+  actions: {
+    toggleModalShow( { state, commit } ) {
+      commit('setModalShow', !state.modalShow)
+    }
+  },
 })

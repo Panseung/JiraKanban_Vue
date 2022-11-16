@@ -1,9 +1,9 @@
 <template>
-  <div v-if="contentModalShow == true">
+  <div v-show="contentModalShow == true">
     <div class="white-bg">
-      <h3>{{ contentItem }}</h3>
-      <h3>{{ contentWriter }}</h3>
-      <button @click="$emit( 'deleteTask', { contentId, contentState } )" >삭제</button>
+      <h3>{{ contentItems.contentText }}</h3>
+      <h3>{{ contentItems.contentWriter }}</h3>
+      <button @click="$emit( 'deleteTask', { contentId: contentItems.contentId, contentState: contentItems.contentState } )" >삭제</button>
       <button @click="$emit( 'closeContentModal' )" >닫기</button>
     </div>
   </div>
@@ -16,20 +16,8 @@ export default {
       type: Boolean,
       required: true
     },
-    contentId: {
-      type: Number,
-      required: true
-    },
-    contentItem: {
-      type: String,
-      required: true
-    },
-    contentWriter: {
-      type: String,
-      required: true
-    },
-    contentState: {
-      type: String,
+    contentItems: {
+      type: Object,
       required: true
     }
     
@@ -41,6 +29,12 @@ export default {
   }
 }
 </script>
-<style>
-
+<style scoped>
+.white-bg {
+  width: 50%; 
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  position: fixed;
+} 
 </style>

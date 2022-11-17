@@ -25,15 +25,18 @@
     <div class="board-container">
       <div
         class="board-item"
-        @drop="onDrop( i )" 
         v-for="( taskState, i ) in taskList" :key="i"
+        @drop="onDropAlone( i )" 
+        @dragover.prevent
       >
         <h2>{{ taskState.stateName }}: {{ taskState.stateItems.length }}</h2>
         <div 
           v-for="( stateItem, j ) in taskState.stateItems" :key="j"
           class="task-box"
           @click="onOpenContentModal( j, stateItem.content, stateItem.writer, taskState.stateName )"
-          @dragstart="startDrag( j )"       
+          @dragstart="onDrag( i, j, stateItem.content, stateItem.writer )"        
+          @drop="onDrop( i, j )" 
+          @dragover.prevent
           draggable="true"
         >
           <p class="task-content">{{ stateItem.content }}</p>
@@ -69,6 +72,11 @@ export default{
       contentWriter:'',
       contentState:'',
       taskList: null, // todoList, progressList, doneList
+      dragFromColumn: 0,
+      dragFromRow: 0,
+      onDropEnable: false,
+      dragContent: '',
+      dragWriter: '',
     }
   },
   methods: {
@@ -115,11 +123,37 @@ export default{
       }
       localStorage.setItem( 'myData', JSON.stringify( this.taskList ) )
     },
-    startDrag( startIdx ) {
-      console.log(startIdx)
+    onDrag( dragColumn, dragRow, dragContent, dragWriter ) {
+      this.onDropEnable = true
+      this.dragFromColumn = dragColumn
+      this.dragFromRow = dragRow
+      this.dragContent = dragContent
+      this.dragWriter = dragWriter
     },
-    onDrop(  ) {
-      console.log
+    onDrop( dropColumn, dropRow ) {
+      if ( this.onDropEnable ) {
+        this.onDropEnable = false
+        this.taskList[this.dragFromColumn].stateItems.splice( this.dragFromRow, 1 )
+        let newItem = {
+          content: this.dragContent,
+          writer: this.dragWriter
+        }
+        this.taskList[dropColumn].stateItems.splice( dropRow, 0, newItem)
+        localStorage.setItem( 'myData', JSON.stringify( this.taskList ) )
+      }
+    },
+    onDropAlone( dropColumn ) {
+      if ( this.onDropEnable ) {
+        this.onDropEnable = false
+        this.taskList[this.dragFromColumn].stateItems.splice( this.dragFromRow, 1 )
+        let newItem = {
+          content: this.dragContent,
+          writer: this.dragWriter
+        }
+        let dropRow = this.taskList[dropColumn].stateItems.length
+        this.taskList[dropColumn].stateItems.splice( dropRow, 0, newItem)
+        localStorage.setItem( 'myData', JSON.stringify( this.taskList ) )
+      }
     }
   }
 }

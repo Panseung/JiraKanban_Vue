@@ -113,7 +113,6 @@ export default{
     onDeleteTask( event ) {
       this.contentModalShow = false
       this.$store.dispatch( 'toggleModalShow' )
-      console.log(event.contentState)
       if ( event.contentState == 'Todo' ) {
         this.taskList[0].stateItems.splice( event.contentId, 1 )
       } else if ( event.contentState == 'Progress' ) {
@@ -181,6 +180,9 @@ export default{
         border-radius: 20px;
         margin-bottom: 10px;
         cursor: pointer;
+        &:hover {
+          background-color: bisque;
+        }
         .task-content {
           padding: 10px;
           font-weight: bold;
@@ -200,6 +202,9 @@ export default{
       border-radius: 10px;
       cursor: pointer;
       text-align: center;
+      &:hover {
+        background-color: bisque;
+      }
       h3 {
         margin: 5px;
       }

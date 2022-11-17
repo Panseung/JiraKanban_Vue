@@ -1,6 +1,9 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import HelloWorld from '@/components/HelloWorld'
+import BoardMain from '@/components/BoardMain'
+import FeaturesMain from '@/components/FeaturesMain'
+import SettingsMain from '@/components/SettingsMain'
 
 Vue.use(Router)
 
@@ -14,17 +17,17 @@ export default new Router({
     {
       path: '/board',
       name: 'board',
-      component: () => import ( '../components/BoardMain' )
+      component: BoardMain
     },
     {
       path: '/features',
       name: 'features',
-      component: () => import ( '../components/FeaturesMain' )
+      component: FeaturesMain
     },
     {
       path: '/settings',
       name: 'settings',
-      component: () => import ( '../components/SettingsMain' )
+      component: SettingsMain
     }
   ]
 })

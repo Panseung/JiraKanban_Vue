@@ -1,5 +1,5 @@
 <template>
-  <div v-show="contentModalShow == true">
+  <div>
     <div class="white-bg">
       <h3>{{ contentItems.contentText }}</h3>
       <h3>{{ contentItems.contentWriter }}</h3>
@@ -12,10 +12,6 @@
 export default {
   name: 'ContentModal',
   props: {
-    contentModalShow: {
-      type: Boolean,
-      required: true
-    },
     contentItems: {
       type: Object,
       required: true

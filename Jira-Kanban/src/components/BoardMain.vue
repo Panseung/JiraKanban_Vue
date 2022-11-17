@@ -1,11 +1,13 @@
 <template>
   <div class="board-main">
     <add-modal
+      v-show="addModalShow == true"
       :addModalShow="addModalShow"
       @closeAddModal="onCloseAddModal"
       @createTask="onCreateTask"
     />
     <content-modal
+       v-show="contentModalShow == true"
       :contentModalShow="contentModalShow"
       :contentItems="{
         contentId: contentId,

@@ -1,7 +1,8 @@
-myData = {
-  todoList: {
-    stateName: 'todo',
-    stateItems: [ {
+myData = [
+  {
+    stateName: 'Todo',
+    stateItems: [ 
+      {
         content: 'Allow users to change between two tiers at the same price',
         writer: 'Kim'
       }, {
@@ -19,9 +20,10 @@ myData = {
       } 
     ] 
   },
-  progressList: {
-    stateName: 'progress',
-    stateItems:[ {
+  { 
+    stateName: 'Progress',
+    stateItems:[ 
+      {
         content: 'Force SSL on any page that contains account info',
         writer: 'Wang'
       }, {
@@ -33,15 +35,16 @@ myData = {
       } 
     ]
   },
-  doneList: {
-    stateName: 'done',
-    stateItems:[ {
+  { 
+    stateName: 'Done',
+    stateItems:[ 
+      {
         content: 'Automate collection of feedback for weekly email report',
         writer: 'Choi'
       }, {
-    content: 'Schedule weekly email report for Monday mrnings to all staff',
+        content: 'Schedule weekly email report for Monday mrnings to all staff',
         writer: 'Yu'
       } 
     ] 
   }
-}
+]

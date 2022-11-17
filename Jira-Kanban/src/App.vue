@@ -1,9 +1,8 @@
 <template>
   <div id="app">
     <div class="black-bg" v-if="getModalShow()"></div>
-    <div class="app-container-row">
       <div class="main-header"></div>
-      <div class="app-container-column">
+      <div class="app-container">
         <div class="app-firstBar"></div>
         <div class="app-secondBar">
           <div>
@@ -24,7 +23,6 @@
           <router-view/>
         </div>
       </div>
-    </div>
   </div>
 </template>
 
@@ -40,70 +38,36 @@ export default {
 </script>
 
 <style lang="scss" scoped >
-#app {
-  height: 100%
-}
-
-#app {
-  
-}
-
-.app-container-row {
-  display: grid;
-  grid-template-rows: 100px 1fr;
-}
-.main-header{
-  grid-row: 1;
-  background-color: beige;
-}
-.app-container-column {
-  grid-row: 2;
-  display: grid;
-  grid-template-columns: 60px 180px 1fr;
-}
-
-.app-firstBar {
-  grid-column: 1;
-  background-color: indianred;
-}
-
-.app-secondBar {
-  grid-column: 2;
-  background-color: whitesmoke;
-  padding: 20px;
-}
-
-.app-board {
-  grid-column: 3;
-  overflow: auto;
-}
-
-/* .app-container {
-  display: flex;
-  height:95vh;
-}
-
-.app-firstBar {
-  flex: 0 0 4vw;
-  background-color: indianred;
-}
-
-.app-secondBar {
-  flex: 0 0 16vw;
-  background-color: whitesmoke;
-  padding: 20px;
-}
-
-.app-board {
-  flex: 1 1 0;
-  overflow: auto;
-} */
-
-.black-bg {
-  width: 100%; 
-  height: 100%;
-  background: rgba(0,0,0,0.5);
-  position: fixed; 
-  padding: 20px;
+#app {  
+  overflow: hidden;
+  .main-header{
+    height: 100px;
+    background-color: beige;
+  }
+  .app-container {
+    height: calc(100vh - 100px);
+    display: grid;
+    grid-template-columns: minmax(0, 60px) minmax(0, 180px) minmax(0, 1fr);
+    .app-firstBar {
+      grid-column: 1;
+      background-color: indianred;
+    }
+    .app-secondBar {
+      grid-column: 2;
+      background-color: whitesmoke;
+      padding: 20px;
+    }
+    .app-board {
+      grid-column: 3;
+      background-color: azure;
+      overflow: auto;
+    }
+  }
+  .black-bg {
+    width: 100%; 
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    position: fixed; 
+  }
 }
 </style>

@@ -39,13 +39,15 @@ export default {
 
 <style lang="scss" scoped >
 #app {  
-  overflow: hidden;
+  height: 100%;
+  display: grid;
+  grid-template-rows: 100px 1fr;
   .main-header{
     height: 100px;
     background-color: beige;
   }
   .app-container {
-    height: calc(100vh - 100px);
+    overflow: hidden;
     display: grid;
     grid-template-columns: minmax(0, 60px) minmax(0, 180px) minmax(0, 1fr);
     .app-firstBar {
@@ -58,9 +60,9 @@ export default {
       padding: 20px;
     }
     .app-board {
+      overflow: auto;
       grid-column: 3;
       background-color: azure;
-      overflow: auto;
     }
   }
   .black-bg {

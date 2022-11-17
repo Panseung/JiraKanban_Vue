@@ -23,19 +23,27 @@
       <input/>
     </div>
     <div class="board-container">
-      <div v-for="( taskState, i ) in taskList" :key="i">
-        <div class="board-item">
-          <h2>{{ taskState.stateName }}: {{ taskState.stateItems.length }}</h2>
-          <div v-for="( stateItem, j ) in taskState.stateItems" :key="j"
-            class="task-box"
-            @click="onOpenContentModal( j, stateItem.content, stateItem.writer, taskState.stateName )"
-          >
+      <div
+        class="board-item"
+        @drop="onDrop( i )" 
+        v-for="( taskState, i ) in taskList" :key="i"
+      >
+        <h2>{{ taskState.stateName }}: {{ taskState.stateItems.length }}</h2>
+        <div 
+          v-for="( stateItem, j ) in taskState.stateItems" :key="j"
+          class="task-box"
+          @click="onOpenContentModal( j, stateItem.content, stateItem.writer, taskState.stateName )"
+          @dragstart="startDrag( j )"       
+          draggable="true"
+        >
           <p class="task-content">{{ stateItem.content }}</p>
           <p class="task-writer">{{ stateItem.writer }}</p>
-          </div>
         </div>
       </div>
-      <div class="board-item-btn" @click="onShowModal"></div>
+      <div class="board-item-btn" @click="onShowModal">
+        <h3>add</h3>
+        <h3>task</h3>
+      </div>
     </div>
   </div>
 </template>
@@ -106,6 +114,12 @@ export default{
         this.taskList[2].stateItems.splice( event.contentId, 1 )
       }
       localStorage.setItem( 'myData', JSON.stringify( this.taskList ) )
+    },
+    startDrag( startIdx ) {
+      console.log(startIdx)
+    },
+    onDrop(  ) {
+      console.log
     }
   }
 }
@@ -121,13 +135,11 @@ export default{
 
   .board-container {
     display: flex;
-    height: 80%;
 
     .board-item {
       flex: 1 1;
       margin: 10px;
       background-color: beige;
-      min-height: 600px;
       padding: 10px;
       border-radius: 20px;
       .task-box {
@@ -147,12 +159,16 @@ export default{
       }
     }
     .board-item-btn {
-      flex: 0 0 40px;
+      flex: 0 0 70px;
       margin: 10px;
       background-color: whitesmoke;
-      height: 40px;
+      height: 70px;
       border-radius: 10px;
       cursor: pointer;
+      text-align: center;
+      h3 {
+        margin: 5px;
+      }
     }
   }
 }

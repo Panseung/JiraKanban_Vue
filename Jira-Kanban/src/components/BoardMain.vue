@@ -20,18 +20,19 @@
     />
     <div class="board-header">
       <h1>Board</h1>
+      <input type="date" v-model="contentNewDate"/>
       <input/>
     </div>
     <div class="board-container">
       <div
         class="board-item"
-        v-for="( taskState, i ) in taskList" :key="i"
-        @drop="onDropAlone( i )" 
+        v-for="( taskStatus, stateName, i ) in taskList" :key="i"
+        @drop="onDropAlone( i )"
         @dragover.prevent
       >
-        <h2>{{ taskState.stateName }}: {{ taskState.stateItems.length }}</h2>
+        <h2>{{ stateName }}: {{ taskStatus.length }}</h2>
         <div 
-          v-for="( stateItem, j ) in taskState.stateItems" :key="j"
+          v-for="( stateItem, j ) in taskStatus" :key="j"
           class="task-box"
           @click="onOpenContentModal( j, stateItem.content, stateItem.writer, taskState.stateName )"
           @dragstart="onDrag( i, j, stateItem.content, stateItem.writer )"        
@@ -39,7 +40,10 @@
           @dragover.prevent
           draggable="true"
         >
+          <p class="task-title">{{ stateItem.title }}</p>
           <p class="task-content">{{ stateItem.content }}</p>
+          <p>{{ stateItem.newDate }}</p>
+          <p>{{ stateItem.expiredDate }}</p>
           <p class="task-writer">{{ stateItem.writer }}</p>
         </div>
       </div>
@@ -60,18 +64,38 @@ export default{
     AddModal,
     ContentModal
   },
+  computed: {
+    
+  },
   created() {
-    this.taskList = JSON.parse(localStorage.getItem('myData'))
+    let localData  = JSON.parse(localStorage.getItem('myData'))
+    console.log(localData)
+    for (let i = 0; i < localData.length; i++) {
+      const task = localData[i]
+      const status = task.status
+      const targetList = this.taskList[status]
+      targetList.push(task)
+    }
+    console.log(this.taskList)
   },  
   data() {
     return {
       addModalShow: false,
       contentModalShow: false,
+      contentNewDate: 0,
+      contentExpiredDate: 0,
+      contentImportance: 0,
       contentId: 0,
+      contentTitle: '',
       contentText:'',
       contentWriter:'',
       contentState:'',
-      taskList: null, // todoList, progressList, doneList
+      taskList: {
+        Todo: [],
+        Progress: [],
+        Done: []
+      },
+      // drag&drop
       dragFromColumn: 0,
       dragFromRow: 0,
       onDropEnable: false,

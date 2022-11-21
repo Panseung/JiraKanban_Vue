@@ -42,9 +42,10 @@
         >
           <p class="task-title">{{ stateItem.title }}</p>
           <p class="task-content">{{ stateItem.content }}</p>
-          <p>{{ stateItem.newDate }}</p>
-          <p>{{ stateItem.expiredDate }}</p>
-          <p>{{ stateItem.taskImportance }}</p>
+          <p>생성날짜: {{ stateItem.newDate }}</p>
+          <p>기한날짜: {{ stateItem.expiredDate }}</p>
+          <p>업무중요도: {{ stateItem.taskImportance }}</p>
+          <p>ID: {{ stateItem.id }}</p>
           <p class="task-writer">{{ stateItem.writer }}</p>
         </div>
       </div>
@@ -151,7 +152,7 @@ export default{
       } else {
         this.taskList[2].stateItems.splice( event.contentId, 1 )
       }
-      localStorage.setItem( 'myData', JSON.stringify( this.taskList ) )
+
     },
     onDrag( dragColumn, dragRow, dragContent, dragWriter ) {
       this.onDropEnable = true

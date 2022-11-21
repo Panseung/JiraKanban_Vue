@@ -1,5 +1,6 @@
 myData = [
   { 
+    id: 0,
     status: 'Todo',
     title: 'Allow',
     content: 'Allow users to change between two tiers at the same price',
@@ -8,6 +9,7 @@ myData = [
     expiredDate: '2022-11-28',
     taskImportance: 0,
   }, {
+    id: 1,
     status: 'Todo',
     title: 'Implement',
     content: 'Implement feed back collector',
@@ -16,6 +18,7 @@ myData = [
     expiredDate: '2022-11-27',
     taskImportance: 0,
   }, {
+    id: 2,
     status: 'Todo',
     title: 'Add',
     content: 'Add NPS feedback to email report',
@@ -24,6 +27,7 @@ myData = [
     expiredDate: '2022-11-26',
     taskImportance: 0,
   }, {
+    id: 3,
     status: 'Todo',
     title: 'Apply',
     content: 'Apply a prorated discount to a user when they move from a low to a high priced tier',
@@ -32,6 +36,7 @@ myData = [
     expiredDate: '2022-11-29',
     taskImportance: 0,
   }, {
+    id: 4,
     status: 'Todo',
     title: 'Extend',
     content: 'extend the grace period to accounts',
@@ -40,6 +45,7 @@ myData = [
     expiredDate: '2022-11-30',
     taskImportance: 0,
   },  {
+    id: 5,
     status: 'Progress',
     title: 'Force',
     content: 'Force SSL on any page that contains account info',
@@ -48,6 +54,7 @@ myData = [
     expiredDate: '2022-11-27',
     taskImportance: 0,
   }, {
+    id: 6,
     status: 'Progress',
     title: 'Create',
     content: 'Create subscription plans and discount codes in Stripe',
@@ -56,6 +63,7 @@ myData = [
     expiredDate: '2022-11-26',
     taskImportance: 0,
   }, {
+    id: 7,
     status: 'Progress',
     title: 'Add',
     content: 'Add analytic to pricing page',
@@ -64,6 +72,7 @@ myData = [
     expiredDate: '2022-11-27',
     taskImportance: 0,
   }, {
+    id: 8,
     status: 'Done',
     title: 'Automate',
     content: 'Automate collection of feedback for weekly email report',
@@ -72,6 +81,7 @@ myData = [
     expiredDate: '2022-11-28',
     taskImportance: 0,
   }, {
+    id: 9,
     status: 'Done',
     title: 'Schedule',
     content: 'Schedule weekly email report for Monday mrnings to all staff',

@@ -44,6 +44,7 @@
           <p class="task-content">{{ stateItem.content }}</p>
           <p>{{ stateItem.newDate }}</p>
           <p>{{ stateItem.expiredDate }}</p>
+          <p>{{ stateItem.taskImportance }}</p>
           <p class="task-writer">{{ stateItem.writer }}</p>
         </div>
       </div>
@@ -68,22 +69,19 @@ export default{
     
   },
   created() {
-    let localData  = JSON.parse(localStorage.getItem('myData'))
-    console.log(localData)
-    for (let i = 0; i < localData.length; i++) {
+    let localData  = JSON.parse( localStorage.getItem( 'myData' ) )
+    for( let i = 0; i < localData.length; i++) {
       const task = localData[i]
       const status = task.status
-      const targetList = this.taskList[status]
-      targetList.push(task)
+      this.taskList[status].push(task)
     }
-    console.log(this.taskList)
   },  
   data() {
     return {
       addModalShow: false,
       contentModalShow: false,
-      contentNewDate: 0,
-      contentExpiredDate: 0,
+      contentNewDate: '2022-01-01',
+      contentExpiredDate: '2022-12-31',
       contentImportance: 0,
       contentId: 0,
       contentTitle: '',
@@ -118,12 +116,21 @@ export default{
     },
     onCreateTask(item) {
       this.addModalShow = false
+      let newDate = new Date()
       let newContent = {
+        status: 'Todo',
+        title: item.titleModel,
         content: item.taskModel,
-        writer: item.writerModel
+        writer: item.writerModel,
+        // date
+        newDate: newDate.getFullYear() + '-' + newDate.getMonth() + '-' + newDate.getDate(),
+        expiredDate: item.expiredDateModel,
+        taskImportance: item.taskImportanceModel
       }
-      this.taskList[0].stateItems.push( newContent )
-      localStorage.setItem( 'myData', JSON.stringify(this.taskList))
+      let localData = JSON.parse( localStorage.getItem( 'myData' ) )
+      this.taskList['Todo'].push( newContent )
+      localData.push( newContent )
+      localStorage.setItem( 'myData', JSON.stringify( localData ) )
       this.$store.dispatch( 'toggleModalShow' )
     },
     onOpenContentModal( id, text, writer, state ) {

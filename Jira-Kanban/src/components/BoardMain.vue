@@ -7,14 +7,9 @@
       @createTask="onCreateTask"
     />
     <content-modal
-       v-show="contentModalShow == true"
+       v-if="contentModalShow == true"
       :contentModalShow="contentModalShow"
-      :contentItems="{
-        contentId: contentId,
-        contentText: contentText,
-        contentWriter: contentWriter,
-        contentState: contentState
-      }"
+      :contentId="contentId"
       @closeContentModal="onCloseContentModal"
       @deleteTask="onDeleteTask"
     />
@@ -34,7 +29,7 @@
         <div 
           v-for="( stateItem, j ) in taskStatus" :key="j"
           class="task-box"
-          @click="onOpenContentModal( j, stateItem.content, stateItem.writer, taskState.stateName )"
+          @click="onOpenContentModal( stateItem.id )"
           @dragstart="onDrag( i, j, stateItem.content, stateItem.writer )"        
           @drop="onDrop( i, j )" 
           @dragover.prevent
@@ -118,6 +113,7 @@ export default{
     onCreateTask(item) {
       this.addModalShow = false
       let newDate = new Date()
+      let newIdx = JSON.parse( localStorage.getItem( 'myData' ) ).length
       let newContent = {
         status: 'Todo',
         title: item.titleModel,
@@ -126,7 +122,8 @@ export default{
         // date
         newDate: newDate.getFullYear() + '-' + newDate.getMonth() + '-' + newDate.getDate(),
         expiredDate: item.expiredDateModel,
-        taskImportance: item.taskImportanceModel
+        taskImportance: item.taskImportanceModel,
+        id: newIdx
       }
       let localData = JSON.parse( localStorage.getItem( 'myData' ) )
       this.taskList['Todo'].push( newContent )
@@ -134,24 +131,36 @@ export default{
       localStorage.setItem( 'myData', JSON.stringify( localData ) )
       this.$store.dispatch( 'toggleModalShow' )
     },
-    onOpenContentModal( id, text, writer, state ) {
+    onOpenContentModal( id ) {
       this.contentId = id
-      this.contentText = text
-      this.contentWriter = writer
       this.contentModalShow = true
-      this.contentState = state
       this.$store.dispatch( 'toggleModalShow' )
     },
+    // QQ
     onDeleteTask( event ) {
       this.contentModalShow = false
       this.$store.dispatch( 'toggleModalShow' )
-      if ( event.contentState == 'Todo' ) {
-        this.taskList[0].stateItems.splice( event.contentId, 1 )
-      } else if ( event.contentState == 'Progress' ) {
-        this.taskList[1].stateItems.splice( event.contentId, 1 )
-      } else {
-        this.taskList[2].stateItems.splice( event.contentId, 1 )
+      let localData = JSON.parse( localStorage.getItem( 'myData' ) )
+      // localStorage에서 지우기
+      for ( let i = 0; i < localData.length; i++ ){
+        const item = localData[i]
+        const itemIdx = item.id
+        if ( event.contentId === itemIdx ) {
+          localData.splice( i, 1 )
+          localStorage.setItem( 'myData', JSON.stringify( localData ) )
+          // taskList에서 지우기
+          const targetArray = this.taskList[item.status]
+          for ( let j = 0; j < targetArray.length; j++ ) {
+            const taskItem = targetArray[j]
+            if ( taskItem.id === itemIdx ) {
+              targetArray.splice( j, 1 )
+              return
+            }
+          }
+          return
+        }
       }
+
 
     },
     onDrag( dragColumn, dragRow, dragContent, dragWriter ) {

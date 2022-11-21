@@ -2,12 +2,12 @@
   <div>
     <div class="white-bg">
       <h2>Task Content:</h2>
-      <h3>{{ contentItems.contentText }}</h3>
+      <h3>{{ opendItem.content }}</h3>
       <br/>
       <h2>Task Writer:</h2>
-      <h3>{{ contentItems.contentWriter }}</h3>
-      <button @click="$emit( 'deleteTask', { contentId: contentItems.contentId, contentState: contentItems.contentState } )" >삭제</button>
-      <button @click="$emit( 'closeContentModal' )" >닫기</button>
+      <h3>{{ opendItem.writer }}</h3>
+      <button @click="onDelete" >삭제</button>
+      <button @click="onClose" >닫기</button>
     </div>
   </div>
 </template>
@@ -15,15 +15,33 @@
 export default {
   name: 'ContentModal',
   props: {
-    contentItems: {
-      type: Object,
+    contentId: {
+      type: Number,
       required: true
     }
     
   },
-  data () {
+  created() {
+    let localData = JSON.parse(localStorage.getItem('myData'))
+    for( let i = 0; i < localData.length; i++ ) {
+      const item = localData[i]
+      if ( item.id === this.contentId ) {
+        this.opendItem = item
+        return
+      }
+    }
+  },
+  data() {
     return {
-      
+      opendItem: {}
+    }
+  },
+  methods: {
+    onDelete() {
+      this.$emit( 'deleteTask', { contentId: this.contentId } )
+    },
+    onClose() {
+      this.$emit( 'closeContentModal' )
     }
   }
 }

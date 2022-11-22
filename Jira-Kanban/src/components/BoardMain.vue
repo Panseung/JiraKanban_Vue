@@ -76,20 +76,18 @@ export default{
     }
   },
   computed: {
-    taskList: {
-      get() {
-        let returnData = {
-          Todo: [],
-          Progress: [],
-          Done: []
-        }
-        for( let i = 0; i < this.localData.length; i++ ) {
-          const task = this.localData[i]
-          const status = task.status
-          returnData[status].push(task)
-        }
-      return returnData
+    taskList() {
+      let returnData = {
+        Todo: [],
+        Progress: [],
+        Done: []
       }
+      for( let i = 0; i < this.localData.length; i++ ) {
+        const task = this.localData[i]
+        const status = task.status
+        returnData[status].push(task)
+      }
+    return returnData
     }
   },
   created() {
@@ -101,7 +99,6 @@ export default{
     },
     getNewId() {
       return Number( localStorage.getItem( 'newId' ) )
-      
     },
     onShowModal() {
       this.addModalShow = true;
@@ -118,7 +115,6 @@ export default{
     onCreateTask(item) {
       this.addModalShow = false
       let newDate = new Date()
-      let newIdx = JSON.parse( localStorage.getItem( 'myData' ) ).length
       let newContent = {
         status: 'Todo',
         title: item.titleModel,
@@ -132,7 +128,7 @@ export default{
       }
       this.localData.push( newContent )
       this.localStorageUpdate()
-      localStorage.setItem('newId', this.getNewId() + 1 ) 
+      localStorage.setItem('newId', this.getNewId() + 1 )
       this.$store.dispatch( 'toggleModalShow' )
     },
     onOpenContentModal( id ) {
@@ -148,7 +144,7 @@ export default{
         if( event.contentId === item.id ) {
           this.localData.splice( i, 1 )
           this.localStorageUpdate()
-          break
+          return
         }
       }
     },
@@ -156,7 +152,6 @@ export default{
       this.onDropEnable = true
       this.dragIdx = idx
       this.dragItem = dragItem
-      
     },
     onDrop( dropColumn ) {
       if ( this.onDropEnable ) {
@@ -166,6 +161,7 @@ export default{
           if( this.dragItem.id === item.id ) {
             this.localData[i].status = dropColumn
             this.localStorageUpdate()
+            return
           }
         }
       }

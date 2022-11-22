@@ -17,6 +17,7 @@
       <h1>Board</h1>
       <input type="date" v-model="contentNewDate"/>
       <input/>
+      <button @click="getNewId">테스트</button>
     </div>
     <div class="board-container">
       <div
@@ -98,6 +99,10 @@ export default{
     localStorageUpdate() {
       localStorage.setItem( 'myData', JSON.stringify( this.localData ) )
     },
+    getNewId() {
+      return Number( localStorage.getItem( 'newId' ) )
+      
+    },
     onShowModal() {
       this.addModalShow = true;
       this.$store.dispatch( 'toggleModalShow' )
@@ -123,10 +128,11 @@ export default{
         newDate: newDate.getFullYear() + '-' + newDate.getMonth() + '-' + newDate.getDate(),
         expiredDate: item.expiredDateModel,
         taskImportance: item.taskImportanceModel,
-        id: newIdx
+        id: this.getNewId()
       }
       this.localData.push( newContent )
       this.localStorageUpdate()
+      localStorage.setItem('newId', this.getNewId() + 1 ) 
       this.$store.dispatch( 'toggleModalShow' )
     },
     onOpenContentModal( id ) {

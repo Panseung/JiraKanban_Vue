@@ -17,7 +17,7 @@
       <h1>Board</h1>
       <input type="date" v-model="contentNewDate"/>
       <input/>
-      <button @click="getNewId">테스트</button>
+      <button @click="">테스트</button>
     </div>
     <div class="board-container">
       <div
@@ -53,7 +53,6 @@
 </template>
 
 <script>
-import { filter } from 'vue/types/umd';
 import AddModal from './AddModal'
 import ContentModal from './ContentModal';
 export default{
@@ -84,18 +83,64 @@ export default{
         Progress: [],
         Done: []
       }
-      for( let i = 0; i < this.localData.length; i++ ) {
-        const task = this.localData[i]
-        const status = task.status
-        returnData[status].push(task)
-      }
-    return returnData
+      return this.groupBy( this.localData, 'status' )
+    //   for( let i = 0; i < this.localData.length; i++ ) {
+    //     const task = this.localData[i]
+    //     const status = task.status
+    //     returnData[status].push( task )
+    //   }
+    // return returnData
     }
   },
   created() {
     this.localData = JSON.parse( localStorage.getItem( 'myData' ) )
   },  
   methods: {
+    groupBy( arr, key ) {
+      const returnObj = {}
+      for( let i = 0; i < arr.length; i++ ) {
+        const item = arr[i]
+        const itemKey = item[key]
+        returnObj[itemKey] = returnObj[itemKey] || []
+        returnObj[itemKey].push( item )
+      }
+      return returnObj
+    },
+    myFilter( arr, fn ) {
+      const returnArr = []
+      for( let i = 0; i < arr.length; i++ ) {
+        const item = arr[i]
+        if( fn( item, i, arr ) ) {
+          returnArr.push( item )
+        }
+      }
+      return returnArr
+    },
+    // arr 받아서 fn 거치고 ref 바꿔서 새로운 객체 리턴하기
+    find( arr, fn ) {
+      let findItem //QQ
+      for( let i = 0; i < arr.length; i++ ) {
+        const item = arr[i]
+        if( fn( item, i, arr) ) {
+          findItem = item
+          break
+        }
+      }
+      return findItem
+      // return findItem
+    },
+    // 넣었던 배열은 바뀌어 있고, return은 삭제된 것들이 담겨있도록
+    remove( arr, fn ) {
+      const returnArr = []
+      for( let i = 0; i < arr.length; i++ ) {
+        const item = arr[i]
+        if( fn( item, i, arr ) ) {
+          returnArr.push( item )
+          arr.splice( i, 1 )
+        }
+      }
+      return returnArr
+    }, 
     localStorageUpdate() {
       localStorage.setItem( 'myData', JSON.stringify( this.localData ) )
     },
@@ -142,47 +187,22 @@ export default{
       this.contentModalShow = false
       this.$store.dispatch( 'toggleModalShow' )
 
-      // 세진 과장님 과제
-      // // const findItem = this.find(this.localData, () => {})
-      // // if(findItem) {
-      // //   this.remove(this.localData, findItem)
-      // // }
-
-      this.filter(  )
-      // for( let i = 0; i < this.localData.length; i++ ){
-      //   const item = this.localData[i]
-      //   if( event.contentId === item.id ) {
-      //     this.localData.splice( i, 1 )
-      //     this.localStorageUpdate()
-      //     return
-      //   }
-      // }
+      // this.localData = this.myFilter( this.localData, value => {
+      //   return value.id !== event.contentId
+      // } )
+      this.remove( this.localData, val => { 
+        return val.id === event.contentId
+      } )
     },
-    // arr 받아서 fn 거치고 ref 바꿔서 새로운 객체 리턴하기
-    find( arr, fn ) {
-
-    },   
-    filter( arr, fn ) {
-      returnArr = []
-      for( let i = 0; i < arr.length; i++ ) {
-        const item = arr[i]
-        if( fn( item ) ) {
-          returnArr.push( item )
-        }
-      }
-      return returnArr
-    },
-    
-    
     onDrag( dragItem, idx ) {
       this.onDropEnable = true
       this.dragIdx = idx
       this.dragItem = dragItem
     },
     onDrop( dropColumn ) {
-      if ( this.onDropEnable ) {
+      if( this.onDropEnable ) {
         this.onDropEnable = false
-        for( let i = 0; i < this.localData.length; i++ ){
+        for( let i = 0; i < this.localData.length; i++ ) {
           const item = this.localData[i]
           if( this.dragItem.id === item.id ) {
             this.localData[i].status = dropColumn

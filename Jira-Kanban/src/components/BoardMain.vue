@@ -21,8 +21,8 @@
     <div class="board-container">
       <div
         class="board-item"
-        v-for="( taskStatus, stateName, i ) in taskList" :key="i"
-        @drop="onDropAlone( stateName )"
+        v-for="( taskStatus, stateName, i ) in taskList" :key="i"     
+        @drop="onDrop( stateName )" 
         @dragover.prevent
       >
         <h2>{{ stateName }}: {{ taskStatus.length }}</h2>
@@ -30,8 +30,7 @@
           v-for="( stateItem, j ) in taskStatus" :key="j"
           class="task-box"
           @click="onOpenContentModal( stateItem.id )"
-          @dragstart="onDrag( stateItem, j )"        
-          @drop="onDrop( stateItem.status, j )" 
+          @dragstart="onDrag( stateItem, j )"   
           @dragover.prevent
           draggable="true"
         >
@@ -158,27 +157,20 @@ export default{
       this.onDropEnable = true
       this.dragIdx = idx
       this.dragItem = dragItem
-      console.log( '야호' )
-      console.log( this.dragItem )
       
     },
-    onDrop( dropColumn, dropRow ) {
+    onDrop( dropColumn ) {
       if ( this.onDropEnable ) {
         this.onDropEnable = false
-        const fromStatus = this.dragItem.status
-        this.taskList[fromStatus].splice( this.dragIdx, 1 )
-        this.taskList[dropColumn].splice( dropRow, 0, this.dragItem )
+        for( let i = 0; i < this.localData.length; i++ ){
+          const item = this.localData[i]
+          if( this.dragItem.id === item.id ) {
+            this.localData[i].status = dropColumn
+            this.localStorageUpdate()
+          }
+        }
       }
-    },
-    onDropAlone( dropColumn ) {
-      if ( this.onDropEnable ) {
-        this.onDropEnable = false
-        const fromStatus = this.dragItem.status
-        this.taskList[fromStatus].splice( this.dragIdx, 1 )
-        let dropRow = this.taskList[dropColumn].length
-        this.taskList[dropColumn].splice( dropRow, 0, this.dragItem)
-      }
-    },
+    }
   }
 }
 </script>

@@ -22,7 +22,7 @@
       <div
         class="board-item"
         v-for="( taskStatus, stateName, i ) in taskList" :key="i"
-        @drop="onDropAlone( i )"
+        @drop="onDropAlone( stateName )"
         @dragover.prevent
       >
         <h2>{{ stateName }}: {{ taskStatus.length }}</h2>
@@ -30,8 +30,8 @@
           v-for="( stateItem, j ) in taskStatus" :key="j"
           class="task-box"
           @click="onOpenContentModal( stateItem.id )"
-          @dragstart="onDrag( i, j, stateItem.content, stateItem.writer )"        
-          @drop="onDrop( i, j )" 
+          @dragstart="onDrag( stateItem, j )"        
+          @drop="onDrop( stateItem.status, j )" 
           @dragover.prevent
           draggable="true"
         >
@@ -61,17 +61,6 @@ export default{
     AddModal,
     ContentModal
   },
-  computed: {
-    
-  },
-  created() {
-    let localData  = JSON.parse( localStorage.getItem( 'myData' ) )
-    for( let i = 0; i < localData.length; i++) {
-      const task = localData[i]
-      const status = task.status
-      this.taskList[status].push(task)
-    }
-  },  
   data() {
     return {
       addModalShow: false,
@@ -84,20 +73,39 @@ export default{
       contentText:'',
       contentWriter:'',
       contentState:'',
-      taskList: {
-        Todo: [],
-        Progress: [],
-        Done: []
-      },
+      localData: [],
       // drag&drop
       dragFromColumn: 0,
       dragFromRow: 0,
       onDropEnable: false,
-      dragContent: '',
-      dragWriter: '',
+      dragItem: {},
+      dragIdx: 0,
     }
   },
+  computed: {
+    taskList: {
+      get() {
+        let returnData = {
+          Todo: [],
+          Progress: [],
+          Done: []
+        }
+        for( let i = 0; i < this.localData.length; i++ ) {
+          const task = this.localData[i]
+          const status = task.status
+          returnData[status].push(task)
+        }
+      return returnData
+      }
+    }
+  },
+  created() {
+    this.localData = JSON.parse( localStorage.getItem( 'myData' ) )
+  },  
   methods: {
+    localStorageUpdate() {
+      localStorage.setItem( 'myData', JSON.stringify( this.localData ) )
+    },
     onShowModal() {
       this.addModalShow = true;
       this.$store.dispatch( 'toggleModalShow' )
@@ -125,10 +133,8 @@ export default{
         taskImportance: item.taskImportanceModel,
         id: newIdx
       }
-      let localData = JSON.parse( localStorage.getItem( 'myData' ) )
-      this.taskList['Todo'].push( newContent )
-      localData.push( newContent )
-      localStorage.setItem( 'myData', JSON.stringify( localData ) )
+      this.localData.push( newContent )
+      this.localStorageUpdate()
       this.$store.dispatch( 'toggleModalShow' )
     },
     onOpenContentModal( id ) {
@@ -136,65 +142,43 @@ export default{
       this.contentModalShow = true
       this.$store.dispatch( 'toggleModalShow' )
     },
-    // QQ
     onDeleteTask( event ) {
       this.contentModalShow = false
       this.$store.dispatch( 'toggleModalShow' )
-      let localData = JSON.parse( localStorage.getItem( 'myData' ) )
-      // localStorage에서 지우기
-      for ( let i = 0; i < localData.length; i++ ){
-        const item = localData[i]
-        const itemIdx = item.id
-        if ( event.contentId === itemIdx ) {
-          localData.splice( i, 1 )
-          localStorage.setItem( 'myData', JSON.stringify( localData ) )
-          // taskList에서 지우기
-          const targetArray = this.taskList[item.status]
-          for ( let j = 0; j < targetArray.length; j++ ) {
-            const taskItem = targetArray[j]
-            if ( taskItem.id === itemIdx ) {
-              targetArray.splice( j, 1 )
-              return
-            }
-          }
-          return
+      for( let i = 0; i < this.localData.length; i++ ){
+        const item = this.localData[i]
+        if( event.contentId === item.id ) {
+          this.localData.splice( i, 1 )
+          this.localStorageUpdate()
+          break
         }
       }
-
-
     },
-    onDrag( dragColumn, dragRow, dragContent, dragWriter ) {
+    onDrag( dragItem, idx ) {
       this.onDropEnable = true
-      this.dragFromColumn = dragColumn
-      this.dragFromRow = dragRow
-      this.dragContent = dragContent
-      this.dragWriter = dragWriter
+      this.dragIdx = idx
+      this.dragItem = dragItem
+      console.log( '야호' )
+      console.log( this.dragItem )
+      
     },
     onDrop( dropColumn, dropRow ) {
       if ( this.onDropEnable ) {
         this.onDropEnable = false
-        this.taskList[this.dragFromColumn].stateItems.splice( this.dragFromRow, 1 )
-        let newItem = {
-          content: this.dragContent,
-          writer: this.dragWriter
-        }
-        this.taskList[dropColumn].stateItems.splice( dropRow, 0, newItem)
-        localStorage.setItem( 'myData', JSON.stringify( this.taskList ) )
+        const fromStatus = this.dragItem.status
+        this.taskList[fromStatus].splice( this.dragIdx, 1 )
+        this.taskList[dropColumn].splice( dropRow, 0, this.dragItem )
       }
     },
     onDropAlone( dropColumn ) {
       if ( this.onDropEnable ) {
         this.onDropEnable = false
-        this.taskList[this.dragFromColumn].stateItems.splice( this.dragFromRow, 1 )
-        let newItem = {
-          content: this.dragContent,
-          writer: this.dragWriter
-        }
-        let dropRow = this.taskList[dropColumn].stateItems.length
-        this.taskList[dropColumn].stateItems.splice( dropRow, 0, newItem)
-        localStorage.setItem( 'myData', JSON.stringify( this.taskList ) )
+        const fromStatus = this.dragItem.status
+        this.taskList[fromStatus].splice( this.dragIdx, 1 )
+        let dropRow = this.taskList[dropColumn].length
+        this.taskList[dropColumn].splice( dropRow, 0, this.dragItem)
       }
-    }
+    },
   }
 }
 </script>

@@ -1,4 +1,4 @@
-myData = [
+taskList = [
   { 
     id: 0,
     status: 'Todo',
@@ -91,3 +91,4 @@ myData = [
     taskImportance: 0,
   }
 ]
+localStorage.setItem( 'myData', JSON.stringify( taskList ) )

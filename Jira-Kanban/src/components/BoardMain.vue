@@ -53,6 +53,7 @@
 </template>
 
 <script>
+import { filter } from 'vue/types/umd';
 import AddModal from './AddModal'
 import ContentModal from './ContentModal';
 export default{
@@ -69,6 +70,7 @@ export default{
       contentExpiredDate: '2022-12-31',
       contentId: 0,
       localData: [],
+      localUser: [],
       // drag&drop
       onDropEnable: false,
       dragItem: {},
@@ -139,15 +141,39 @@ export default{
     onDeleteTask( event ) {
       this.contentModalShow = false
       this.$store.dispatch( 'toggleModalShow' )
-      for( let i = 0; i < this.localData.length; i++ ){
-        const item = this.localData[i]
-        if( event.contentId === item.id ) {
-          this.localData.splice( i, 1 )
-          this.localStorageUpdate()
-          return
+
+      // 세진 과장님 과제
+      // // const findItem = this.find(this.localData, () => {})
+      // // if(findItem) {
+      // //   this.remove(this.localData, findItem)
+      // // }
+
+      this.filter(  )
+      // for( let i = 0; i < this.localData.length; i++ ){
+      //   const item = this.localData[i]
+      //   if( event.contentId === item.id ) {
+      //     this.localData.splice( i, 1 )
+      //     this.localStorageUpdate()
+      //     return
+      //   }
+      // }
+    },
+    // arr 받아서 fn 거치고 ref 바꿔서 새로운 객체 리턴하기
+    find( arr, fn ) {
+
+    },   
+    filter( arr, fn ) {
+      returnArr = []
+      for( let i = 0; i < arr.length; i++ ) {
+        const item = arr[i]
+        if( fn( item ) ) {
+          returnArr.push( item )
         }
       }
+      return returnArr
     },
+    
+    
     onDrag( dragItem, idx ) {
       this.onDropEnable = true
       this.dragIdx = idx

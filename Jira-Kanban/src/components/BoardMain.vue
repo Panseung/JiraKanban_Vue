@@ -16,6 +16,7 @@
     <div class="board-header">
       <h1>Board</h1>
       <input @keyup="onSearch" v-model="searchContent"/>
+      <button @click="sortByImportance">task 우선순위 정렬</button>
       <button @click="onSearch">테스트</button>
     </div>
     <div class="board-container">
@@ -73,6 +74,7 @@ export default{
       onDropEnable: false,
       dragItem: {},
       dragIdx: 0,
+      sorted: false,
     }
   },
   computed: {
@@ -210,7 +212,28 @@ export default{
           }
         }
       }
-    }
+    },
+    // QQ
+    sortByImportance() {
+      if ( !this.sorted ) {
+        const localStorageTaskList = JSON.parse( localStorage.getItem( 'myData') )
+        const result = localStorageTaskList.sort( function( a, b ) {
+          const aVal = a.taskImportance
+          const bVal = b.taskImportance
+          if( aVal > bVal ) {
+            return -1
+          } else if( aVal < bVal ) {
+            return 1
+          } else {
+            return 0
+          }
+        } )
+        this.localData = result
+      } else {
+        this.taskListInitialize()
+      }
+      this.sorted = !this.sorted
+    },
   }
 }
 </script>

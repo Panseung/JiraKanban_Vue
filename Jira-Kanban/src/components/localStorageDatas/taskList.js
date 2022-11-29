@@ -7,7 +7,7 @@ taskList = [
     writer: 'Kim',
     newDate: '2022-11-21',
     expiredDate: '2022-11-28',
-    taskImportance: 0,
+    taskImportance: 1,
   }, {
     id: 1,
     status: 'Todo',
@@ -16,7 +16,7 @@ taskList = [
     writer: 'Park',
     newDate: '2022-11-20',
     expiredDate: '2022-11-27',
-    taskImportance: 0,
+    taskImportance: 3,
   }, {
     id: 2,
     status: 'Todo',
@@ -25,7 +25,7 @@ taskList = [
     writer: 'Chang',
     newDate: '2022-11-19',
     expiredDate: '2022-11-26',
-    taskImportance: 0,
+    taskImportance: 2,
   }, {
     id: 3,
     status: 'Todo',
@@ -34,7 +34,7 @@ taskList = [
     writer: 'Long',
     newDate: '2022-11-22',
     expiredDate: '2022-11-29',
-    taskImportance: 0,
+    taskImportance: 4,
   }, {
     id: 4,
     status: 'Todo',
@@ -43,7 +43,7 @@ taskList = [
     writer: 'Han',
     newDate: '2022-11-23',
     expiredDate: '2022-11-30',
-    taskImportance: 0,
+    taskImportance: 1,
   },  {
     id: 5,
     status: 'Progress',
@@ -52,7 +52,7 @@ taskList = [
     writer: 'Wang',
     newDate: '2022-11-20',
     expiredDate: '2022-11-27',
-    taskImportance: 0,
+    taskImportance: 5,
   }, {
     id: 6,
     status: 'Progress',
@@ -61,7 +61,7 @@ taskList = [
     writer: 'Lee',
     newDate: '2022-11-19',
     expiredDate: '2022-11-26',
-    taskImportance: 0,
+    taskImportance: 4,
   }, {
     id: 7,
     status: 'Progress',
@@ -70,7 +70,7 @@ taskList = [
     writer: 'Woo',
     newDate: '2022-11-20',
     expiredDate: '2022-11-27',
-    taskImportance: 0,
+    taskImportance: 2,
   }, {
     id: 8,
     status: 'Done',
@@ -79,7 +79,7 @@ taskList = [
     writer: 'Choi',
     newDate: '2022-11-21',
     expiredDate: '2022-11-28',
-    taskImportance: 0,
+    taskImportance: 3,
   }, {
     id: 9,
     status: 'Done',
@@ -88,7 +88,7 @@ taskList = [
     writer: 'Yu',
     newDate: '2022-11-21',
     expiredDate: '2022-11-28',
-    taskImportance: 0,
+    taskImportance: 1,
   }
 ]
 localStorage.setItem( 'myData', JSON.stringify( taskList ) )

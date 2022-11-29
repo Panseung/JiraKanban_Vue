@@ -191,6 +191,7 @@ export default{
       this.remove( this.localData, val => { 
         return val.id === event.contentId
       } )
+      this.localStorageUpdate()
     },
     onDrag( dragItem, idx ) {
       this.onDropEnable = true

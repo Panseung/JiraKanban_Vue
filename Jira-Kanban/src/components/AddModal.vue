@@ -7,10 +7,9 @@
      <h3>Write Task Content</h3>
      <input v-model="taskModel"/>
      <h3>Writer</h3>
-     <input v-model="writerModel"/>
-     <select>
+     <select v-model="writerModel">
        <optgroup label="Writer">
-         <option v-for="( writer, i) in userList">{{ writer.name }}</option>
+         <option v-for="( writer, i) in userList" :value=writer.name>{{ writer.name }}</option>
        </optgroup>
      </select>
      <h3>Expired Date</h3>

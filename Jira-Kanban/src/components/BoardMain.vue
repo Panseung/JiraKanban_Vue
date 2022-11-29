@@ -15,9 +15,8 @@
     />
     <div class="board-header">
       <h1>Board</h1>
-      <input type="date" v-model="contentNewDate"/>
-      <input/>
-      <button @click="">테스트</button>
+      <input @keyup="onSearch" v-model="searchContent"/>
+      <button @click="onSearch">테스트</button>
     </div>
     <div class="board-container">
       <div
@@ -65,11 +64,11 @@ export default{
     return {
       addModalShow: false,
       contentModalShow: false,
-      contentNewDate: '2022-01-01',
       contentExpiredDate: '2022-12-31',
       contentId: 0,
+      searchContent: '',
       localData: [],
-      localUser: [],
+      // localUser: [],
       // drag&drop
       onDropEnable: false,
       dragItem: {},
@@ -84,18 +83,15 @@ export default{
         Done: []
       }
       return this.groupBy( this.localData, 'status' )
-    //   for( let i = 0; i < this.localData.length; i++ ) {
-    //     const task = this.localData[i]
-    //     const status = task.status
-    //     returnData[status].push( task )
-    //   }
-    // return returnData
     }
   },
   created() {
-    this.localData = JSON.parse( localStorage.getItem( 'myData' ) )
+    this.taskListInitialize()
   },  
   methods: {
+    taskListInitialize() {
+      this.localData = JSON.parse( localStorage.getItem( 'myData' ) )
+    },
     groupBy( arr, key ) {
       const returnObj = {}
       for( let i = 0; i < arr.length; i++ ) {
@@ -105,6 +101,11 @@ export default{
         returnObj[itemKey].push( item )
       }
       return returnObj
+    },
+    onSearch() {
+      this.taskListInitialize()
+      const result = this.localData.filter( task => task.content.toLowerCase().includes( this.searchContent.toLowerCase() ) )
+      this.localData = result
     },
     myFilter( arr, fn ) {
       const returnArr = []
@@ -130,6 +131,7 @@ export default{
       // return findItem
     },
     // 넣었던 배열은 바뀌어 있고, return은 삭제된 것들이 담겨있도록
+    
     remove( arr, fn ) {
       const returnArr = []
       for( let i = 0; i < arr.length; i++ ) {
@@ -186,10 +188,6 @@ export default{
     onDeleteTask( event ) {
       this.contentModalShow = false
       this.$store.dispatch( 'toggleModalShow' )
-
-      // this.localData = this.myFilter( this.localData, value => {
-      //   return value.id !== event.contentId
-      // } )
       this.remove( this.localData, val => { 
         return val.id === event.contentId
       } )
